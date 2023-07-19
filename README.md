@@ -7,3 +7,5 @@ This app obtains the list of latest radar images from the Hong Kong Observatory 
 Radar image selected is the 64km-range version, which is then scaled 2x and cropped centrally.
 
 Pressing Start/Stop will Pause/Unpause the animation.
+
+Only tested to work on the Fenix 7, since the image scaling and positioning depends on the screen being 260x260.

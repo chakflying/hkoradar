@@ -5,9 +5,10 @@
 //
 
 import Toybox.Communications;
-import Toybox.Lang;
-import Toybox.WatchUi;
 import Toybox.Graphics;
+import Toybox.Lang;
+import Toybox.System;
+import Toybox.WatchUi;
 
 //! Creates a web request on menu / select events
 class HKORadarDelegate extends WatchUi.BehaviorDelegate {
@@ -19,6 +20,8 @@ class HKORadarDelegate extends WatchUi.BehaviorDelegate {
 
   private var imageUrlList as Array<String>;
   private var imageRequestProgress as Number;
+
+  private var systemSettings as DeviceSettings;
 
   //! Set up the callback to the view
   //! @param handler Callback method for when data is received
@@ -37,6 +40,8 @@ class HKORadarDelegate extends WatchUi.BehaviorDelegate {
 
     imageUrlList = [];
     imageRequestProgress = 0;
+    systemSettings = System.getDeviceSettings();
+
     getImageList();
   }
 
@@ -77,8 +82,8 @@ class HKORadarDelegate extends WatchUi.BehaviorDelegate {
   private function requestImage(num as Number) as Void {
     var options = {
       :dithering => Communications.IMAGE_DITHERING_FLOYD_STEINBERG,
-      :maxWidth => 750,
-      :maxHeight => 520,
+      :maxWidth => systemSettings.screenWidth,
+      :maxHeight => systemSettings.screenHeight,
     };
 
     Communications.makeImageRequest(
@@ -98,7 +103,7 @@ class HKORadarDelegate extends WatchUi.BehaviorDelegate {
 
       var timestamps = [];
 
-      for (var i = 1; i <= 12; i++) {
+      for (var i = 1; i <= 10; i++) {
         var image = data["radar"]["range2"]["image"][length - i];
         var eqPos = image.find("=");
         image = image.substring(eqPos + 2, -2);
@@ -110,7 +115,14 @@ class HKORadarDelegate extends WatchUi.BehaviorDelegate {
         timestamps.add(image.substring(dotPos - 4, dotPos));
 
         imageUrlList.add(
-          Lang.format("https://www.hko.gov.hk/wxinfo/radars/$1$", [image])
+          Lang.format(
+            "https://hko-radar-img.fly.dev/unsafe/75x75:325x325/$1$x$2$/filters:strip_exif():format(png)/www.hko.gov.hk/wxinfo/radars/$3$",
+            [
+              systemSettings.screenWidth.toString(),
+              systemSettings.screenHeight.toString(),
+              image,
+            ]
+          )
         );
       }
 

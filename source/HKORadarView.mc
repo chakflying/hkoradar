@@ -7,8 +7,8 @@
 import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.System;
-import Toybox.WatchUi;
 import Toybox.Timer;
+import Toybox.WatchUi;
 
 //! Shows the web request result
 class HKORadarView extends WatchUi.View {
@@ -71,14 +71,10 @@ class HKORadarView extends WatchUi.View {
     dc.clear();
 
     if (bitmaps != null) {
-      var transform = new AffineTransform();
-      // transform.scale(2.0, 2.0);
-      transform.translate(-130.0, -130.0);
-
       dc.drawBitmap2(0, 0, bitmaps[currentDisplayPos], {
-        :transform => transform,
-        :filterMode => Graphics.FILTER_MODE_BILINEAR,
-        :tintColor => 0xcccccc,
+        // :transform => transform,
+        :filterMode => Graphics.FILTER_MODE_POINT,
+        // :tintColor => 0xcccccc,
       });
 
       if (currentDisplayPos < timestamps.size()) {
@@ -118,7 +114,7 @@ class HKORadarView extends WatchUi.View {
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
 
     var arcPos = currentDisplayPos + 1;
-    if (arcPos == 12) {
+    if (arcPos == 10) {
       arcPos = 0;
     }
 
@@ -128,7 +124,7 @@ class HKORadarView extends WatchUi.View {
       120,
       Graphics.ARC_CLOCKWISE,
       360,
-      360 - (360 / 12) * arcPos
+      360 - (360 / 10) * arcPos
     );
   }
 
@@ -139,7 +135,7 @@ class HKORadarView extends WatchUi.View {
 
     for (var i = 0; i < 72; i++) {
       var widthFactor = Math.sin(
-        ((spinnerState - i.toFloat()) / 18.0) * Math.PI
+        ((spinnerState * 2.0 - i.toFloat()) / 18.0) * Math.PI
       );
 
       var width = 7.0 * widthFactor;

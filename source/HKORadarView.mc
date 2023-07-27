@@ -83,7 +83,7 @@ class HKORadarView extends WatchUi.View {
           dc.getWidth() / 2,
           dc.getHeight() / 2 + 80,
           Graphics.FONT_XTINY,
-          Lang.format("$1$:$2$", [
+          Lang.format("$1$ : $2$", [
             timestamps[currentDisplayPos].substring(0, 2),
             timestamps[currentDisplayPos].substring(2, 4),
           ]),
@@ -122,9 +122,9 @@ class HKORadarView extends WatchUi.View {
       _screenCenterPoint[0],
       _screenCenterPoint[1],
       120,
-      Graphics.ARC_CLOCKWISE,
+      Graphics.ARC_COUNTER_CLOCKWISE,
       360,
-      360 - (360 / 10) * arcPos
+      (360 / 10) * arcPos
     );
   }
 

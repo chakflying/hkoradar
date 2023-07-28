@@ -121,7 +121,7 @@ class HKORadarView extends WatchUi.View {
     dc.drawArc(
       _screenCenterPoint[0],
       _screenCenterPoint[1],
-      120,
+      (systemSettings.screenWidth / 2) - 10,
       Graphics.ARC_COUNTER_CLOCKWISE,
       360,
       (360 / 10) * arcPos
@@ -147,7 +147,7 @@ class HKORadarView extends WatchUi.View {
       dc.drawArc(
         _screenCenterPoint[0],
         _screenCenterPoint[1],
-        120,
+        (systemSettings.screenWidth / 2) - 10,
         Graphics.ARC_CLOCKWISE,
         i * 5 + spinnerState,
         i * 5 + spinnerState - width

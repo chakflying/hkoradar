@@ -1,9 +1,3 @@
-//
-// Copyright 2015-2021 by Garmin Ltd. or its subsidiaries.
-// Subject to Garmin SDK License Agreement and Wearables
-// Application Developer Agreement.
-//
-
 import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.System;
@@ -12,7 +6,7 @@ import Toybox.WatchUi;
 
 //! Shows the web request result
 class HKORadarView extends WatchUi.View {
-  private var _message as String = "Press menu or\nselect button";
+  private var _message as String = "Initializing";
 
   private var bitmaps as Array<BitmapResource or Graphics.BitmapReference>?;
   private var timestamps as Array<String>?;
@@ -23,9 +17,6 @@ class HKORadarView extends WatchUi.View {
 
   private var _screenCenterPoint as Array<Number>;
   private var systemSettings as DeviceSettings;
-
-  private var spinnerState as Float;
-  private var loading as Boolean;
 
   //! Constructor
   public function initialize() {
@@ -40,14 +31,14 @@ class HKORadarView extends WatchUi.View {
       [systemSettings.screenWidth / 2, systemSettings.screenHeight / 2] as
       Array<Number>;
 
-    spinnerState = 0.0;
-    loading = true;
     playAnimation = true;
   }
 
   //! Load your resources here
   //! @param dc Device context
-  public function onLayout(dc as Dc) as Void {}
+  public function onLayout(dc as Dc) as Void {
+    startLoading();
+  }
 
   //! Restore the state of the app and prepare the view to be shown
   public function onShow() as Void {
@@ -71,17 +62,13 @@ class HKORadarView extends WatchUi.View {
     dc.clear();
 
     if (bitmaps != null) {
-      dc.drawBitmap2(0, 0, bitmaps[currentDisplayPos], {
-        // :transform => transform,
-        :filterMode => Graphics.FILTER_MODE_POINT,
-        // :tintColor => 0xcccccc,
-      });
+      dc.drawBitmap(0, 0, bitmaps[currentDisplayPos]);
 
       if (currentDisplayPos < timestamps.size()) {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.drawText(
           dc.getWidth() / 2,
-          dc.getHeight() / 2 + 80,
+          (dc.getHeight() / 2) * 1.65,
           Graphics.FONT_XTINY,
           Lang.format("$1$ : $2$", [
             timestamps[currentDisplayPos].substring(0, 2),
@@ -102,15 +89,11 @@ class HKORadarView extends WatchUi.View {
         Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
       );
     }
-
-    if (loading) {
-      drawSpinner(dc);
-    }
   }
 
   private function drawProgress(dc as Dc, currentDisplayPos as Number) as Void {
     dc.setAntiAlias(true);
-    dc.setPenWidth(6);
+    dc.setPenWidth(systemSettings.screenWidth / 42);
     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
 
     var arcPos = currentDisplayPos + 1;
@@ -121,45 +104,11 @@ class HKORadarView extends WatchUi.View {
     dc.drawArc(
       _screenCenterPoint[0],
       _screenCenterPoint[1],
-      (systemSettings.screenWidth / 2) - 10,
+      systemSettings.screenWidth / 2 - 10,
       Graphics.ARC_COUNTER_CLOCKWISE,
       360,
       (360 / 10) * arcPos
     );
-  }
-
-  private function drawSpinner(dc as Dc) as Void {
-    dc.setAntiAlias(true);
-    dc.setPenWidth(8);
-    dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
-
-    for (var i = 0; i < 72; i++) {
-      var widthFactor = Math.sin(
-        ((spinnerState * 2.0 - i.toFloat()) / 18.0) * Math.PI
-      );
-
-      var width = 7.0 * widthFactor;
-
-      if (width < 1.0) {
-        width = 1.0;
-      }
-
-      dc.drawArc(
-        _screenCenterPoint[0],
-        _screenCenterPoint[1],
-        (systemSettings.screenWidth / 2) - 10,
-        Graphics.ARC_CLOCKWISE,
-        i * 5 + spinnerState,
-        i * 5 + spinnerState - width
-      );
-    }
-
-    spinnerState += 0.1;
-    if (spinnerState >= 360.0) {
-      spinnerState = 0.0;
-    }
-
-    WatchUi.requestUpdate();
   }
 
   //! Called when this View is removed from the screen. Save the
@@ -180,10 +129,10 @@ class HKORadarView extends WatchUi.View {
   public function onBitmapData(
     data as BitmapResource or Graphics.BitmapReference or Null
   ) as Void {
-    loading = false;
     if (data != null) {
       if (bitmaps == null) {
         bitmaps = [data];
+        WatchUi.popView(WatchUi.SLIDE_BLINK);
       } else {
         bitmaps.add(data);
       }
@@ -204,5 +153,17 @@ class HKORadarView extends WatchUi.View {
         displayTimer.start(method(:onAnimateTimer), 250, true);
       }
     }
+  }
+
+  public function startLoading() as Void {
+    var loadingView = new $.HKORadarLoadingView();
+
+    var loadingDelegate = new $.HKORadarLoadingDelegate(
+      method(:onBitmapData),
+      method(:onTimestamps),
+      loadingView.method(:setDisplayString)
+    );
+
+    WatchUi.pushView(loadingView, loadingDelegate, WatchUi.SLIDE_IMMEDIATE);
   }
 }

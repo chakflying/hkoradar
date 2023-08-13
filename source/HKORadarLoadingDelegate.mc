@@ -91,33 +91,39 @@ class HKORadarLoadingDelegate extends WatchUi.BehaviorDelegate {
     responseCode as Number,
     data as Dictionary or String or Null
   ) as Void {
-    if (data instanceof Dictionary) {
-      var length = data["radar"]["range2"]["image"].size();
+    if (responseCode == 200) {
+      if (data instanceof Dictionary) {
+        var length = data["radar"]["range2"]["image"].size();
 
-      var timestamps = [];
+        var timestamps = [];
 
-      for (var i = 1; i <= 10; i++) {
-        var image = data["radar"]["range2"]["image"][length - i];
-        var eqPos = image.find("=");
-        image = image.substring(eqPos + 2, -2);
+        for (var i = 1; i <= 10; i++) {
+          var image = data["radar"]["range2"]["image"][length - i];
+          var eqPos = image.find("=");
+          image = image.substring(eqPos + 2, -2);
 
-        var dotPos = image.find(".");
+          var dotPos = image.find(".");
 
-        timestamps.add(image.substring(dotPos - 4, dotPos));
+          timestamps.add(image.substring(dotPos - 4, dotPos));
 
-        imageUrlList.add(
-          Lang.format(urlTemplate, [
-            systemSettings.screenWidth.toString(),
-            systemSettings.screenHeight.toString(),
-            image,
-          ])
-        );
+          imageUrlList.add(
+            Lang.format(urlTemplate, [
+              systemSettings.screenWidth.toString(),
+              systemSettings.screenHeight.toString(),
+              image,
+            ])
+          );
+        }
+
+        _setTimestamps.invoke(timestamps);
+
+        imageRequestProgress = 0;
+        makeRequests();
       }
-
-      _setTimestamps.invoke(timestamps);
-
-      imageRequestProgress = 0;
-      makeRequests();
+    } else {
+      _setDisplayString.invoke(
+        "Failed to load\nError: " + responseCode.toString()
+      );
     }
   }
 

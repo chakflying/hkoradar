@@ -6,7 +6,7 @@ import Toybox.WatchUi;
 
 //! Shows the web request result
 class HKORadarLoadingView extends WatchUi.View {
-  private var _message as String = "Initializing";
+  private var _message as String;
 
   private var _screenCenterPoint as Array<Number>;
   private var systemSettings as DeviceSettings;
@@ -17,6 +17,8 @@ class HKORadarLoadingView extends WatchUi.View {
   //! Constructor
   public function initialize() {
     WatchUi.View.initialize();
+
+    _message = Application.loadResource($.Rez.Strings.Initializing);
 
     systemSettings = System.getDeviceSettings();
     _screenCenterPoint =

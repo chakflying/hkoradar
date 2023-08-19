@@ -1,3 +1,8 @@
 <resources>
     <string id="AppName">HKO Radar</string>
+    <string id="Initializing">Initializing</string>
+    <string id="BeginDownload">Press Start to\n begin download</string>
+    <string id="DownloadingImages">Downloading\nImages...</string>
+    <string id="DownloadingImageList">Downloading\nImage List...</string>
+    <string id="FailedToLoad">Failed to load</string>
 </resources>

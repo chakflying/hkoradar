@@ -1,0 +1,8 @@
+<resources>
+    <string id="AppName">天文台雷達</string>
+    <string id="Initializing">載入中</string>
+    <string id="BeginDownload">按 '開始'\n嘗試下載</string>
+    <string id="DownloadingImages">下載圖片中...</string>
+    <string id="DownloadingImageList">下載最新資料中...</string>
+    <string id="FailedToLoad">下載失敗</string>
+</resources>

@@ -53,7 +53,9 @@ class HKORadarLoadingDelegate extends WatchUi.BehaviorDelegate {
   }
 
   private function getImageList() as Void {
-    _setDisplayString.invoke("Downloading\nImage List...");
+    _setDisplayString.invoke(
+      Application.loadResource($.Rez.Strings.DownloadingImageList)
+    );
 
     Communications.makeWebRequest(
       "https://www.hko.gov.hk/wxinfo/radars/iradar_img.json",
@@ -66,7 +68,9 @@ class HKORadarLoadingDelegate extends WatchUi.BehaviorDelegate {
   }
 
   private function makeRequests() as Void {
-    _setDisplayString.invoke("Downloading\nImages...");
+    _setDisplayString.invoke(
+      Application.loadResource($.Rez.Strings.DownloadingImages)
+    );
 
     requestImage(0);
   }
@@ -122,7 +126,9 @@ class HKORadarLoadingDelegate extends WatchUi.BehaviorDelegate {
       }
     } else {
       _setDisplayString.invoke(
-        "Failed to load\nError: " + responseCode.toString()
+        Application.loadResource($.Rez.Strings.FailedToLoad) +
+          "\nError: " +
+          responseCode.toString()
       );
     }
   }
@@ -143,7 +149,9 @@ class HKORadarLoadingDelegate extends WatchUi.BehaviorDelegate {
       }
     } else {
       _setDisplayString.invoke(
-        "Failed to load\nError: " + responseCode.toString()
+        Application.loadResource($.Rez.Strings.FailedToLoad) +
+          "\nError: " +
+          responseCode.toString()
       );
     }
   }

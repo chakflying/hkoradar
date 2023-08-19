@@ -6,7 +6,9 @@ import Toybox.WatchUi;
 
 //! Shows the web request result
 class HKORadarView extends WatchUi.View {
-  private var _message as String = "Initializing";
+  private var _message as String;
+
+  private var initialStart as Boolean;
 
   private var bitmaps as Array<BitmapResource or Graphics.BitmapReference>?;
   private var timestamps as Array<String>?;
@@ -22,6 +24,9 @@ class HKORadarView extends WatchUi.View {
   public function initialize() {
     WatchUi.View.initialize();
 
+    _message = Application.loadResource($.Rez.Strings.Initializing);
+    initialStart = true;
+
     bitmaps = null;
     timestamps = null;
     currentDisplayPos = 0;
@@ -36,13 +41,17 @@ class HKORadarView extends WatchUi.View {
 
   //! Load your resources here
   //! @param dc Device context
-  public function onLayout(dc as Dc) as Void {
-    startLoading();
-  }
+  public function onLayout(dc as Dc) as Void {}
 
   //! Restore the state of the app and prepare the view to be shown
   public function onShow() as Void {
-    displayTimer.start(method(:onAnimateTimer), 250, true);
+    if (bitmaps == null && initialStart) {
+      startLoading();
+      initialStart = false;
+      _message = Application.loadResource($.Rez.Strings.BeginDownload);
+    } else {
+      displayTimer.start(method(:onAnimateTimer), 250, true);
+    }
   }
 
   public function onAnimateTimer() as Void {
@@ -88,6 +97,20 @@ class HKORadarView extends WatchUi.View {
         _message,
         Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
       );
+
+      if (initialStart == false) {
+        // Draw Start Button indicator
+        dc.setPenWidth(systemSettings.screenWidth / 36);
+        dc.setColor(Graphics.COLOR_BLUE, Graphics.COLOR_BLACK);
+        dc.drawArc(
+          _screenCenterPoint[0],
+          _screenCenterPoint[1],
+          systemSettings.screenWidth / 2 - 5,
+          Graphics.ARC_COUNTER_CLOCKWISE,
+          17,
+          42
+        );
+      }
     }
   }
 
@@ -113,7 +136,9 @@ class HKORadarView extends WatchUi.View {
 
   //! Called when this View is removed from the screen. Save the
   //! state of your app here.
-  public function onHide() as Void {}
+  public function onHide() as Void {
+    displayTimer.stop();
+  }
 
   //! Show the result or status of the web request
   //! @param args Data from the web request, or error message
@@ -144,13 +169,17 @@ class HKORadarView extends WatchUi.View {
   }
 
   public function onInteract(togglePause as Boolean) as Void {
-    if (togglePause) {
-      playAnimation = !playAnimation;
+    if (bitmaps == null) {
+      startLoading();
+    } else {
+      if (togglePause) {
+        playAnimation = !playAnimation;
 
-      if (!playAnimation) {
-        displayTimer.stop();
-      } else {
-        displayTimer.start(method(:onAnimateTimer), 250, true);
+        if (!playAnimation) {
+          displayTimer.stop();
+        } else {
+          displayTimer.start(method(:onAnimateTimer), 250, true);
+        }
       }
     }
   }

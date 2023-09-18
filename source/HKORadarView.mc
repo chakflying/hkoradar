@@ -17,6 +17,8 @@ class HKORadarView extends WatchUi.View {
   private var currentDisplayPos as Number;
   private var playAnimation as Boolean;
 
+  private var exitTimer as Timer.Timer?;
+
   private var _screenCenterPoint as Array<Number>;
   private var systemSettings as DeviceSettings;
 
@@ -37,6 +39,7 @@ class HKORadarView extends WatchUi.View {
       Array<Number>;
 
     playAnimation = true;
+    exitTimer = new Timer.Timer();
   }
 
   //! Load your resources here
@@ -161,6 +164,9 @@ class HKORadarView extends WatchUi.View {
       } else {
         bitmaps.add(data);
       }
+
+      // Refresh timeout to exit
+      exitTimer.start(method(:exit), 180000, false);
     }
   }
 
@@ -194,5 +200,9 @@ class HKORadarView extends WatchUi.View {
     );
 
     WatchUi.pushView(loadingView, loadingDelegate, WatchUi.SLIDE_IMMEDIATE);
+  }
+
+  public function exit() as Void {
+    System.exit();
   }
 }

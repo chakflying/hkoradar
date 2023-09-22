@@ -1,6 +1,6 @@
 # HKO-Radar
 
-![cover image](docs/hero-01.png)
+![cover image](docs/hero-02.png)
 
 This app obtains the list of latest radar images from the Hong Kong Observatory internal API, then request them sequentially starting from the latest. Results are displayed as a looping animation.
 

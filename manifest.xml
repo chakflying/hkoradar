@@ -9,6 +9,8 @@
             <iq:product id="fenix7"/>
             <iq:product id="fenix7x"/>
             <iq:product id="fenix7xpro"/>
+            <iq:product id="fr165"/>
+            <iq:product id="fr165m"/>
             <iq:product id="fr255"/>
             <iq:product id="fr255m"/>
             <iq:product id="fr255s"/>
@@ -19,7 +21,10 @@
             <iq:product id="marq2"/>
             <iq:product id="venu2"/>
             <iq:product id="venu2plus"/>
+            <iq:product id="venu2s"/>
             <iq:product id="venu3"/>
+            <iq:product id="venu3s"/>
+            <iq:product id="vivoactive5"/>
         </iq:products>
         <iq:permissions>
             <iq:uses-permission id="Communications"/>

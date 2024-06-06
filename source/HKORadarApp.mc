@@ -18,10 +18,11 @@ class HKORadarApp extends Application.AppBase {
 
   //! Return the initial view for the app
   //! @return Array Pair [View, Delegate]
-  public function getInitialView() as Array<Views or InputDelegates>? {
+  public function getInitialView() as [WatchUi.Views] or
+    [WatchUi.Views, WatchUi.InputDelegates] {
     var view = new $.HKORadarView();
     var delegate = new $.HKORadarDelegate(view.method(:onInteract));
 
-    return [view, delegate] as Array<Views or InputDelegates>;
+    return [view, delegate];
   }
 }

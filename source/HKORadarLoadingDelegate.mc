@@ -97,12 +97,12 @@ class HKORadarLoadingDelegate extends WatchUi.BehaviorDelegate {
   ) as Void {
     if (responseCode == 200) {
       if (data instanceof Dictionary) {
-        var length = data["radar"]["range2"]["image"].size();
+        var length = data["radar"]["range3"]["image"].size();
 
         var timestamps = [];
 
         for (var i = 1; i <= 10; i++) {
-          var image = data["radar"]["range2"]["image"][length - i];
+          var image = data["radar"]["range3"]["image"][length - i];
           var eqPos = image.find("=");
           image = image.substring(eqPos + 2, -2);
 
